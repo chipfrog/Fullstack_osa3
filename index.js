@@ -1,7 +1,9 @@
+require ('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -36,7 +38,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({}).then(people => {
+    res.json(people.map(person => person.toJSON()))
+  })
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -77,20 +81,21 @@ app.post('/api/persons', (req, res) => {
       error: 'name or number missing'
     })
   }
-  const person = persons.find(person => person.name === body.name)
-  if (person) {
-    return res.status(409).json({
-      error: 'name must be unique'
-    })
-  }
-  const personToAdd = {
+  // const person = persons.find(person => person.name === body.name)
+  // if (person) {
+  //   return res.status(409).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
+  const personToAdd = new Person({
     name: body.name,
     number: body.number,
     id: generateId(1000000)
-  }
+  })
   console.log(`Lisätään ${personToAdd.name} backendiin`)
-  persons = persons.concat(personToAdd)
-  res.json(personToAdd)
+  personToAdd.save().then(savedPerson => {
+    res.json(savedPerson.toJSON())
+  })
   
 })
 
