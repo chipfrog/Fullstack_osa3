@@ -16,23 +16,23 @@ app.use(bodyParser.json())
 
 let persons = [
   {
-    name: "Pertti Pellava",
-    number: "0501234567",
+    name: 'Pertti Pellava',
+    number: '0501234567',
     id: 1
   },
   {
-    name: "Erkki Käläjänmäki",
-    number: "1232341324",
+    name: 'Erkki Käläjänmäki',
+    number: '1232341324',
     id: 2
   },
   {
-    name: "Tellervo Testaaja",
-    number: "030303030",
+    name: 'Tellervo Testaaja',
+    number: '030303030',
     id: 3
   },
   {
-    name: "Bert Backend",
-    number: "12343243",
+    name: 'Bert Backend',
+    number: '12343243',
     id: 4
   }
 ]
@@ -84,7 +84,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     name: body.name,
     number: body.number
   }
-  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
     .then(updatedPerson => {
       response.json(updatedPerson.toJSON())
     })
@@ -101,11 +101,11 @@ app.post('/api/persons', (req, res, next) => {
     id: generateId(1000000)
   })
   personToAdd.save()
-  .then(savedPerson => {
-    res.json(savedPerson.toJSON())
-  })
-  .catch(error => next(error))
-  
+    .then(savedPerson => {
+      res.json(savedPerson.toJSON())
+    })
+    .catch(error => next(error))
+
 })
 
 const errorHandler = (error, request, response, next) => {
@@ -115,13 +115,13 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'TypeError') {
     return response.status(404).send({ error: 'unknown endpoint' })
-  
-  } else if (error.name === 'CastError' && error.kind == 'ObjectId') {
+
+  } else if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  
+
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({error: error.message})
-  
+    return response.status(400).json({ error: error.message })
+
   }
 
   next(error)
